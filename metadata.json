@@ -1,0 +1,25 @@
+{
+  "name": "NWUK Community & Enterprise Platform",
+  "shortName": "NWUK",
+  "description": "Community, event ticketing, and multi-channel advertising platform for the Nigerian Women in the UK diaspora network.",
+  "version": "1.0.0",
+  "capabilities": {
+    "eventTicketing": true,
+    "digitalPasses": true,
+    "multiChannelAdvertising": ["WhatsApp", "Facebook", "Telegram", "Email"],
+    "adminModeration": true,
+    "aiSpotlights": {
+      "provider": "gemini",
+      "model": "gemini-2.0-flash",
+      "gracefulFallback": true
+    },
+    "businessDirectory": true,
+    "memberWallet": true,
+    "inAppInbox": true
+  },
+  "theme": {
+    "primary": "#b32844",
+    "accent": "#d4a017",
+    "fonts": ["Playfair Display", "Plus Jakarta Sans"]
+  }
+}
