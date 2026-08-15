@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Sparkles, Quote, Loader2, RefreshCw } from 'lucide-react';
 import type { Spotlight } from '../types';
+import { pickFallbackSpotlight } from '../data/fallbackStories';
 import { Badge } from './ui';
 
 const PROFESSIONS = ['Any', 'NHS Doctor', 'Solicitor', 'Fintech Founder', 'Creative Director', 'Academic'];
@@ -16,6 +17,8 @@ export default function InspiringStoriesSection() {
   const generate = async () => {
     setLoading(true);
     setError(false);
+    // Small delay so the loading state is perceptible even on instant fallback.
+    const started = Date.now();
     try {
       const res = await fetch('/api/stories/generate', {
         method: 'POST',
@@ -25,11 +28,17 @@ export default function InspiringStoriesSection() {
           region: region === 'Any' ? undefined : region,
         }),
       });
+      if (!res.ok) throw new Error('bad status');
+      const ct = res.headers.get('content-type') ?? '';
+      if (!ct.includes('application/json')) throw new Error('not json');
       const data: Spotlight = await res.json();
       setSpotlight(data);
     } catch {
-      setError(true);
+      // Endpoint unavailable (e.g. static deployment) — use curated fallback.
+      setSpotlight(pickFallbackSpotlight(profession, region));
     } finally {
+      const elapsed = Date.now() - started;
+      if (elapsed < 400) await new Promise((r) => setTimeout(r, 400 - elapsed));
       setLoading(false);
     }
   };
